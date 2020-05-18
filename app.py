@@ -18,6 +18,11 @@ from __future__ import print_function
 from future.standard_library import install_aliases
 install_aliases()
 
+import time, uuid, urllib, urllib2
+import hmac, hashlib
+from base64 import b64encode
+
+
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
@@ -37,9 +42,73 @@ app = Flask(__name__)
 def webhook():
     req = request.get_json(silent=True, force=True)
 
-    print("Request:")
-    print(json.dumps(req, indent=4))
+    #print("Request: Here it comes.............")
+    #print(req.json() )
+    #print((("*"*9)*"\n")*3)
+    x=json.dumps(req, indent=4)
+    #print(type(x))
+    x=json.loads(x)
+    x=x["queryResult"]["parameters"]["geo-city"]
+    #print(x)
 
+
+    url='https://weather-ydn-yql.media.yahoo.com/forecastrss'
+    method = 'GET'
+    app_id = 'MAECMG48'
+    consumer_key = 'dj0yJmk9NjlManhWM0FwcGFBJmQ9WVdrOVRVRkZRMDFITkRnbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWQ3'
+    consumer_secret = '956184cfb63ede4c76c7afb6bf12477d3b8d292b'
+    concat = '&'
+    query = {'location': x, 'format': 'json'}
+    oauth = {
+        'oauth_consumer_key': consumer_key,
+        'oauth_nonce': uuid.uuid4().hex,
+        'oauth_signature_method': 'HMAC-SHA1',
+        'oauth_timestamp': str(int(time.time())),
+        'oauth_version': '1.0'
+    }
+
+    """
+    Prepare signature string (merge all params and SORT them)
+    """
+    merged_params = query.copy()
+    merged_params.update(oauth)
+    sorted_params = [k + '=' + urllib.quote(merged_params[k], safe='') for k in sorted(merged_params.keys())]
+    signature_base_str =  method + concat + urllib.quote(url, safe='') + concat + urllib.quote(concat.join(sorted_params), safe='')
+
+    """
+    Generate signature
+    """
+    composite_key = urllib.quote(consumer_secret, safe='') + concat
+    oauth_signature = b64encode(hmac.new(composite_key, signature_base_str, hashlib.sha1).digest())
+
+    """
+    Prepare Authorization header
+    """
+    oauth['oauth_signature'] = oauth_signature
+    auth_header = 'OAuth ' + ', '.join(['{}="{}"'.format(k,v) for k,v in oauth.iteritems()])
+
+    """
+    Send request
+    """
+    url = url + '?' + urllib.urlencode(query)
+    request1 = urllib2.Request(url)
+    request1.add_header('Authorization', auth_header)
+    request1.add_header('X-Yahoo-App-Id', app_id)
+    response = urllib2.urlopen(request1).read()
+    #print(response)
+    response=json.loads(response)
+    
+    return {"fulfillmentMessages": [
+      {
+        "text": {
+          "text": [
+            "Today in "+ x +" " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"])
+          ]
+        }
+      }
+    ]}
+
+'''
     res = processRequest(req)
 
     res = json.dumps(res, indent=4)
@@ -52,7 +121,7 @@ def webhook():
 def processRequest(req):
     if req.get("result").get("action") != "yahooWeatherForecast":
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
+    baseurl = "https://weather-ydn-yql.media.yahoo.com/forecastrss"
     yql_query = makeYqlQuery(req)
     if yql_query is None:
         return {}
@@ -111,7 +180,7 @@ def makeWebhookResult(data):
         # "contextOut": [],
         "source": "apiai-weather-webhook-sample"
     }
-
+'''
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
