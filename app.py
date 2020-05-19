@@ -15,8 +15,8 @@
 # limitations under the License.
 
 from __future__ import print_function
-from future.standard_library import install_aliases
-install_aliases()
+#from future.standard_library import install_aliases
+#install_aliases()
 
 import time, uuid, urllib, urllib2
 import hmac, hashlib
@@ -106,6 +106,33 @@ def webhook():
         }
       }
     ]}
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    return  "Hello there"
+
+
+@app.route('/static_reply', methods=['POST'])
+def static_reply():
+    speech = "Hello there, this is static reply from the webhook."
+    string = "Guten tag"
+    Message ="message string"
+
+    my_result =  {
+
+    "fulfillmentText": string,
+     "source": string
+    }
+
+    res = json.dumps(my_result, indent=4)
+
+    r = make_response(res)
+
+    r.headers['Content-Type'] = 'application/json'
+    return r
+
+
 
 '''
     res = processRequest(req)
