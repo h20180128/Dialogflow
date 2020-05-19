@@ -23,9 +23,9 @@ import hmac, hashlib
 from base64 import b64encode
 
 
-from urllib.parse import urlparse, urlencode
-from urllib.request import urlopen, Request
-from urllib.error import HTTPError
+#from urllib.parse import urlparse, urlencode
+#from urllib.request import urlopen, Request
+#from urllib.error import HTTPError
 
 import json
 import os
@@ -44,7 +44,6 @@ def webhook():
 
     #print("Request: Here it comes.............")
     #print(req.json() )
-    #print((("*"*9)*"\n")*3)
     x=json.dumps(req, indent=4)
     #print(type(x))
     x=json.loads(x)
