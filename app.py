@@ -101,7 +101,7 @@ def webhook():
       {
         "text": {
           "text": [
-            "Today in "+ x +" " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"])
+            "Today in "+ x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"])
           ]
         }
       }
