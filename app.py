@@ -98,81 +98,81 @@ def webhook():
     response=json.loads(response)
     url2 = "https://api.airvisual.com/v2/city?city={}&state=California&country=USA&key=28ed033f-4236-4a07-a8f8-83e5f30a19b8".format(x)
 
-  payload = {}
-  headers= {}
+    payload = {}
+    headers= {}
 
-  response2 = requests.request("GET", url2, headers=headers, data = payload)
+    response2 = requests.request("GET", url2, headers=headers, data = payload)
 
-  t=(response2.text.encode('utf8'))
+    t=(response2.text.encode('utf8'))
 
-  d=json.loads(t)
+    d=json.loads(t)
 
-  #print(d)
-  #print(pass)
-  s=d['data']['current']['pollution']['aqius']
-  #print(s)
-  if 0<=s<=50 :
-    return {
-    "fulfillmentMessages": 
-      
+    #print(d)
+    #print(pass)
+    s=d['data']['current']['pollution']['aqius']
+    #print(s)
+    if 0<=s<=50 :
+      return {
+      "fulfillmentMessages": 
 
-      
-            "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a good A.Q.I of " + str(s)
+
+
+              "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a good A.Q.I of " + str(s)
+      }
+    elif 51<=s<=100 :
+      return {
+      "fulfillmentMessages": 
+
+
+
+              "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a moderate A.Q.I of " + str(s)
+
+
     }
-  elif 51<=s<=100 :
-    return {
-    "fulfillmentMessages": 
-      
 
-      
-            "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a moderate A.Q.I of " + str(s)
+    elif 101<=s<=150:
+      return {
+      "fulfillmentMessages": 
 
-    
-  }
-  
-  elif 101<=s<=150:
-    return {
-    "fulfillmentMessages": 
-      
 
-      
-            "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and an A.Q.I of " + str(s) + "which is unhealthy for sensitive groups"
 
-    
-  }
+              "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and an A.Q.I of " + str(s) + "which is unhealthy for sensitive groups"
 
-  elif 151<=s<=200:
-    return {
-    "fulfillmentMessages": 
-      
 
-      
-            "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and an unhealthy A.Q.I of " + str(s)
+    }
 
-    
-  }
+    elif 151<=s<=200:
+      return {
+      "fulfillmentMessages": 
 
-  elif 201<=s<=300:
-    return {
-    "fulfillmentMessages": 
-      
 
-      
-            "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a very unhealthy A.Q.I of " + str(s)
 
-    
-  }
+              "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and an unhealthy A.Q.I of " + str(s)
 
-  elif 301<=s<=500:
-    return {
-    "fulfillmentMessages": 
-      
 
-      
-            "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a moderate A.Q.I of " + str(s)
+    }
 
-    
-  }
+    elif 201<=s<=300:
+      return {
+      "fulfillmentMessages": 
+
+
+
+              "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a very unhealthy A.Q.I of " + str(s)
+
+
+    }
+
+    elif 301<=s<=500:
+      return {
+      "fulfillmentMessages": 
+
+
+
+              "Today in " + x +" : " + response["current_observation"]["condition"]["text"] + " with a temperature of " + str(response["current_observation"]["condition"]["temperature"]) + " degrees fahrenheit and a moderate A.Q.I of " + str(s)
+
+
+    }
     
     '''
     return {"fulfillmentMessages": [
