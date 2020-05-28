@@ -50,7 +50,8 @@ def webhook():
     x=x["queryResult"]["parameters"]["geo-city"]
     #print(x)
 
-
+    if req.get("result").get("action") != "yahooWeatherForecast":
+        return {}
     url='https://weather-ydn-yql.media.yahoo.com/forecastrss'
     method = 'GET'
     app_id = 'MAECMG48'
